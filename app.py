@@ -1,12 +1,7 @@
 from enum import auto, IntEnum
 import os
-from flask import Flask, make_response, request
 from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
-from dotenv import load_dotenv
-
-load_dotenv()
-app = Flask(__name__)
 
 
 class InteractionType(IntEnum):
@@ -28,27 +23,24 @@ SIGNATURE_TIMESTAMP = "X-Signature-Timestamp"
 verify_key = VerifyKey(bytes.fromhex(PUBLIC_KEY))
 
 
-def _validate_request_headers(signature, body, timestamp) -> bool:
-    retval = True
+def _validate_request_headers(signature, body, timestamp):
     try:
         verify_key.verify(f"{timestamp}{body}".encode(),
                           bytes.fromhex(signature))
     except BadSignatureError:
-        retval = False
-    return retval
+        raise Exception("Invalid request signature")
 
 
-@app.post("/")
-def root():
-    signature = request.headers[SIGNATURE_HEADER]
-    timestamp = request.headers[SIGNATURE_TIMESTAMP]
-    body = request.data.decode("utf-8")
-    if not _validate_request_headers(signature, body, timestamp):
-        return make_response("Invalid request signature", 401)
+def lambda_handler(event, context):
+    signature = event["params"]["header"].get(SIGNATURE_HEADER)
+    timestamp = event["params"]["header"].get(SIGNATURE_TIMESTAMP)
+    body = event.get("rawBody")
 
-    interaction = request.get_json()
+    _validate_request_headers(signature, body, timestamp)
+
+    interaction = event.get("body-json", {})
     response_json = {}
-    if interaction["type"] == InteractionType.PING:
+    if interaction.get("type") == InteractionType.PING:
         response_json["type"] = InteractionCallbackType.PONG
 
-    return make_response(response_json, 200)
+    return response_json
