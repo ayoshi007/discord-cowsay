@@ -28,7 +28,7 @@ def _validate_request_headers(signature, body, timestamp):
         verify_key.verify(f"{timestamp}{body}".encode(),
                           bytes.fromhex(signature))
     except BadSignatureError:
-        raise Exception("Invalid request signature")
+        raise Exception("[UNAUTHORIZED] Invalid request signature")
 
 
 def lambda_handler(event, context):
