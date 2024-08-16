@@ -17,8 +17,8 @@ class InteractionCallbackType(IntEnum):
 
 
 PUBLIC_KEY = os.environ["DISCORD_PUBLIC_TOKEN"]
-SIGNATURE_HEADER = "X-Signature-Ed25519"
-SIGNATURE_TIMESTAMP = "X-Signature-Timestamp"
+SIGNATURE_HEADER = "x-signature-ed25519"
+SIGNATURE_TIMESTAMP = "x-signature-timestamp"
 
 verify_key = VerifyKey(bytes.fromhex(PUBLIC_KEY))
 
