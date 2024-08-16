@@ -32,7 +32,7 @@ def _validate_request_headers(signature, body, timestamp):
         raise Exception("[UNAUTHORIZED] Invalid request signature")
 
 
-def lambda_handler(event):
+def lambda_handler(event, context):
     signature = event["header"].get(SIGNATURE_HEADER)
     timestamp = event["header"].get(SIGNATURE_TIMESTAMP)
     body = event.get("body")
