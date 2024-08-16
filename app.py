@@ -1,5 +1,6 @@
 from enum import auto, IntEnum
 import os
+import json
 from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
 
@@ -31,14 +32,14 @@ def _validate_request_headers(signature, body, timestamp):
         raise Exception("[UNAUTHORIZED] Invalid request signature")
 
 
-def lambda_handler(event, context):
-    signature = event["params"]["header"].get(SIGNATURE_HEADER)
-    timestamp = event["params"]["header"].get(SIGNATURE_TIMESTAMP)
-    body = event.get("rawBody")
+def lambda_handler(event):
+    signature = event["header"].get(SIGNATURE_HEADER)
+    timestamp = event["header"].get(SIGNATURE_TIMESTAMP)
+    body = event.get("body")
 
     _validate_request_headers(signature, body, timestamp)
 
-    interaction = event.get("body-json", {})
+    interaction = json.loads(body)
     response_json = {}
     if interaction.get("type") == InteractionType.PING:
         response_json["type"] = InteractionCallbackType.PONG
