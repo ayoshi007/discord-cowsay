@@ -33,8 +33,8 @@ def _validate_request_headers(signature, body, timestamp):
 
 
 def lambda_handler(event, context):
-    signature = event["header"].get(SIGNATURE_HEADER)
-    timestamp = event["header"].get(SIGNATURE_TIMESTAMP)
+    signature = event["headers"].get(SIGNATURE_HEADER)
+    timestamp = event["headers"].get(SIGNATURE_TIMESTAMP)
     body = event.get("body")
 
     _validate_request_headers(signature, body, timestamp)
