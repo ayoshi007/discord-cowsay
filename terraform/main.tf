@@ -42,7 +42,7 @@ resource "aws_lambda_function" "discord_cowsay" {
   role             = aws_iam_role.lambda_exec.arn
 
   runtime = "python3.11"
-  handler = "proxy.lambda_handler"
+  handler = "proxy.handler"
   layers = [aws_lambda_layer_version.cowsay_layer.arn]
 
   timeout = 3
