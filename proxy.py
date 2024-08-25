@@ -1,6 +1,7 @@
 from enum import auto, IntEnum
 import os
 import json
+import boto3
 from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
 
@@ -19,11 +20,12 @@ class InteractionCallbackType(IntEnum):
 
 
 PUBLIC_KEY = os.environ["DISCORD_PUBLIC_TOKEN"]
+SNS_TOPIC_ARN = os.environ["SNS_TOPIC_ARN"]
 SIGNATURE_HEADER = "x-signature-ed25519"
 SIGNATURE_TIMESTAMP = "x-signature-timestamp"
 
 verify_key = VerifyKey(bytes.fromhex(PUBLIC_KEY))
-
+sns_client = boto3.client("sns")
 
 def _validate_request_headers(signature, body, timestamp):
     try:
@@ -51,7 +53,7 @@ def handle_command(interaction):
     
 
 
-def lambda_handler(event, context):
+def handler(event, context):
     signature = event["headers"].get(SIGNATURE_HEADER)
     timestamp = event["headers"].get(SIGNATURE_TIMESTAMP)
     body = event.get("body")
@@ -66,8 +68,21 @@ def lambda_handler(event, context):
     if interaction_type == InteractionType.PING:
         response_json["type"] = InteractionCallbackType.PONG
     elif interaction_type == InteractionType.APPLICATION_COMMAND:
-        response_json = handle_command(interaction)
-
+        try:
+            sns_client.publish(
+                TopicArn=SNS_TOPIC_ARN,
+                MessageStructure="json",
+                Message=body,
+                MessageAttributes={
+                    "command": {
+                        "DataType": "String",
+                        "StringValue": "blep"
+                    },
+                }
+            )
+        except Exception as e:
+            print(e)
+            
     return {
         "isBase64Encoded": False,
         "statusCode": 200,
