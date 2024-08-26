@@ -40,10 +40,7 @@ def _validate_request_headers(signature, body, timestamp):
         }
 
 
-def handle_command(interaction):
-    print(interaction.get("name"))
-    print(interaction.get("type"))
-    print(interaction.get("data"))
+def handle_command():
     return {
         "type": InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
         "data": {
@@ -65,18 +62,23 @@ def handler(event, context):
     interaction = json.loads(body)
     interaction_type = interaction.get("type")
     response_json = {}
+    print(interaction)
     if interaction_type == InteractionType.PING:
         response_json["type"] = InteractionCallbackType.PONG
     elif interaction_type == InteractionType.APPLICATION_COMMAND:
         try:
             sns_client.publish(
                 TopicArn=SNS_TOPIC_ARN,
-                MessageStructure="json",
-                Message=body,
+                Message=json.dumps(
+                    {
+                        option["name"]: option["value"]
+                        for option in interaction["data"]["options"]  
+                    }
+                ),
                 MessageAttributes={
                     "command": {
                         "DataType": "String",
-                        "StringValue": "blep"
+                        "StringValue": interaction["data"]["name"]
                     },
                 }
             )
@@ -87,5 +89,5 @@ def handler(event, context):
         "isBase64Encoded": False,
         "statusCode": 200,
         "headers": {"content-type": "application/json"},
-        "body": json.dumps(response_json)
+        "body": json.dumps(handle_command())
     }
