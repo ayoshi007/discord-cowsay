@@ -1,14 +1,34 @@
 data "archive_file" "command_archive" {
   type        = "zip"
   source_file = "${var.source_file}"
-  output_path = "${path.module}/source.zip"
+  output_path = "${path.module}/${var.command_name}.zip"
+}
+
+resource "aws_iam_role" "command_lambda_exec" {
+  name = "${var.command_name}-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Sid    = ""
+      Principal = {
+        Service = "lambda.amazonaws.com"
+      }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_policy" {
+  role       = aws_iam_role.command_lambda_exec.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
 resource "aws_lambda_function" "command" {
   function_name    = var.command_name
   filename         = data.archive_file.command_archive.output_path
   source_code_hash = data.archive_file.command_archive.output_base64sha256
-  role             = var.lambda_exec_role_arn
+  role             = aws_iam_role.command_lambda_exec.arn
 
   runtime = "python3.11"
   handler = var.handler_function

@@ -14,8 +14,6 @@ variable "handler_function" {
 }
 
 variable "layer_arn" {}
-variable "lambda_exec_role_arn" {}
-
 
 variable "invoke_command_topic_arn" {
     description = "ARN to publish command invocation messages to"
