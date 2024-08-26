@@ -18,4 +18,4 @@ variable "invoke_command_topic_arn" {
 
 variable "layer_arn" {}
 
-variable "lambda_exec_role_arn" {}
+variable "sns_publish_policy_arn" {}

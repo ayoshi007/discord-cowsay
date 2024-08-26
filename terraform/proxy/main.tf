@@ -4,11 +4,36 @@ data "archive_file" "python_discord_cowsay" {
   output_path = "${path.module}/source.zip"
 }
 
+resource "aws_iam_role" "lambda_exec" {
+  name = "serverless_lambda"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Sid    = ""
+      Principal = {
+        Service = "lambda.amazonaws.com"
+      }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_policy_exec_lambda" {
+  role       = aws_iam_role.lambda_exec.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_policy_publish_sns" {
+  role       = aws_iam_role.lambda_exec.name
+  policy_arn = var.sns_publish_policy_arn
+}
+
 resource "aws_lambda_function" "discord_cowsay" {
   function_name    = "discord_cowsay_proxy"
   filename         = data.archive_file.python_discord_cowsay.output_path
   source_code_hash = data.archive_file.python_discord_cowsay.output_base64sha256
-  role             = var.lambda_exec_role_arn
+  role             = aws_iam_role.lambda_exec.arn
 
   runtime = "python3.11"
   handler = var.handler_function
@@ -79,3 +104,5 @@ resource "aws_lambda_permission" "api_gw" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.lambda.execution_arn}/*/*/cowsay"
 }
+
+
