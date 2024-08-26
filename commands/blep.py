@@ -1,3 +1,14 @@
 def handler(event, context):
-    print(event)
-    print(context)
+    for record in event['Records']:
+        process_message(record)
+    print("done")
+
+def process_message(record):
+    try:
+        message = record['Sns']['Message']
+        print(f"Processed message {message}")
+        # TODO; Process your record here
+        
+    except Exception as e:
+        print("An error occurred")
+        raise e
