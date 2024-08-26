@@ -29,7 +29,7 @@ module "proxy" {
     discord_public_token = var.discord_public_token
     invoke_command_topic_arn = module.common.invoke_command_sns_arn
     layer_arn = module.common.lambda_layer_arn
-    lambda_exec_role_arn = module.common.lambda_exec_role_arn
+    sns_publish_policy_arn = module.common.sns_publish_policy_arn
 }
 
 module "blep_command" {
@@ -41,7 +41,15 @@ module "blep_command" {
     discord_public_token = var.discord_public_token
     invoke_command_topic_arn = module.common.invoke_command_sns_arn
     layer_arn = module.common.lambda_layer_arn
-    lambda_exec_role_arn = module.common.lambda_exec_role_arn
 }
 
+module "blop_command" {
+    command_name = "blop"
+    source = "./terraform/command"
+    source_file = "${path.module}/commands/blop.py"
+    handler_function = "blop.handler"
 
+    discord_public_token = var.discord_public_token
+    invoke_command_topic_arn = module.common.invoke_command_sns_arn
+    layer_arn = module.common.lambda_layer_arn
+}
