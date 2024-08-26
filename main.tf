@@ -41,6 +41,7 @@ module "blep_command" {
     discord_public_token = var.discord_public_token
     invoke_command_topic_arn = module.common.invoke_command_sns_arn
     layer_arn = module.common.lambda_layer_arn
+    iam_role_arn = module.common.command_role_arn
 }
 
 module "blop_command" {
@@ -52,4 +53,5 @@ module "blop_command" {
     discord_public_token = var.discord_public_token
     invoke_command_topic_arn = module.common.invoke_command_sns_arn
     layer_arn = module.common.lambda_layer_arn
+    iam_role_arn = module.common.command_role_arn
 }

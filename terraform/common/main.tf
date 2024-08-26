@@ -29,3 +29,22 @@ resource "aws_iam_policy" "proxy_lambda_sns_publish_policy" {
   policy = data.aws_iam_policy_document.proxy_publish_sns_policy_doc.json
 }
 
+resource "aws_iam_role" "command_lambda_exec" {
+  name = "command-lambda-exec-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Sid    = ""
+      Principal = {
+        Service = "lambda.amazonaws.com"
+      }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_policy" {
+  role       = aws_iam_role.command_lambda_exec.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
