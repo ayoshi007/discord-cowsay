@@ -15,11 +15,6 @@ resource "aws_lambda_function" "command" {
   layers = [var.layer_arn]
 
   timeout = 15
-  environment {
-    variables = {
-      DISCORD_PUBLIC_TOKEN = var.discord_public_token
-    }
-  }
 }
 
 resource "aws_cloudwatch_log_group" "command" {

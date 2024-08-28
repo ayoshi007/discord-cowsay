@@ -1,10 +1,5 @@
 variable "command_name" {}
 
-variable "discord_public_token" {
-    description = "Public token to Discord"
-    sensitive = true
-}
-
 variable "source_file" {
     description = "Path to Lambda source file"
 }

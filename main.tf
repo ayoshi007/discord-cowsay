@@ -38,20 +38,19 @@ module "blep_command" {
     source_file = "${path.module}/commands/blep.py"
     handler_function = "blep.handler"
 
-    discord_public_token = var.discord_public_token
     invoke_command_topic_arn = module.common.invoke_command_sns_arn
     layer_arn = module.common.lambda_layer_arn
     iam_role_arn = module.common.command_role_arn
 }
 
-module "blop_command" {
-    command_name = "blop"
-    source = "./terraform/command"
-    source_file = "${path.module}/commands/blop.py"
-    handler_function = "blop.handler"
+# module "blop_command" {
+#     command_name = "blop"
+#     source = "./terraform/command"
+#     source_file = "${path.module}/commands/blop.py"
+#     handler_function = "blop.handler"
 
-    discord_public_token = var.discord_public_token
-    invoke_command_topic_arn = module.common.invoke_command_sns_arn
-    layer_arn = module.common.lambda_layer_arn
-    iam_role_arn = module.common.command_role_arn
-}
+#     discord_public_token = var.discord_public_token
+#     invoke_command_topic_arn = module.common.invoke_command_sns_arn
+#     layer_arn = module.common.lambda_layer_arn
+#     iam_role_arn = module.common.command_role_arn
+# }
