@@ -17,6 +17,7 @@ class InteractionType(IntEnum):
 class InteractionCallbackType(IntEnum):
     PONG = 1
     CHANNEL_MESSAGE_WITH_SOURCE = 4
+    DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE = 5
 
 
 PUBLIC_KEY = os.environ["DISCORD_PUBLIC_TOKEN"]
@@ -40,16 +41,6 @@ def _validate_request_headers(signature, body, timestamp):
         }
 
 
-def handle_command():
-    return {
-        "type": InteractionCallbackType.CHANNEL_MESSAGE_WITH_SOURCE,
-        "data": {
-            "content": "Hello from Lambda",
-        }
-    }
-    
-
-
 def handler(event, context):
     signature = event["headers"].get(SIGNATURE_HEADER)
     timestamp = event["headers"].get(SIGNATURE_TIMESTAMP)
@@ -66,28 +57,30 @@ def handler(event, context):
     if interaction_type == InteractionType.PING:
         response_json["type"] = InteractionCallbackType.PONG
     elif interaction_type == InteractionType.APPLICATION_COMMAND:
+        application_id = interaction["application_id"]
+        interaction_token = interaction["token"]
+        interaction_data = interaction["data"]
         try:
             sns_client.publish(
                 TopicArn=SNS_TOPIC_ARN,
-                Message=json.dumps(
-                    {
-                        option["name"]: option["value"]
-                        for option in interaction["data"]["options"]  
-                    }
-                ),
+                Message=json.dumps({
+                    "application_id": application_id,
+                    "interaction_token": interaction_token,
+                    "options": interaction_data.get("options"),
+                }),
                 MessageAttributes={
                     "command": {
                         "DataType": "String",
-                        "StringValue": interaction["data"]["name"]
+                        "StringValue": interaction_data["name"]
                     },
                 }
             )
         except Exception as e:
             print(e)
-            
+        response_json["type"] = InteractionCallbackType.DEFERRED_CHANNEL_MESSAGE_WITH_SOURCE
     return {
         "isBase64Encoded": False,
         "statusCode": 200,
         "headers": {"content-type": "application/json"},
-        "body": json.dumps(handle_command())
+        "body": json.dumps(response_json)
     }
