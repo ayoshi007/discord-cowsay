@@ -16,4 +16,7 @@
 
 
 ## Broader goals
-- [ ] rewrite it in Rust
+- [ ] rewrite in Rust
+    - [ ] rewrite register script to Rust
+    - [ ] rewrite proxy and command Lambdas to Rust using AWS Linux runtime
+        - [ ] rewrite custom packages as a Rust lib
