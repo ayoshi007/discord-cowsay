@@ -1,0 +1,188 @@
+[
+    {
+        "name": "cowsay",
+        "type": 1,
+        "description": "cowsay moo",
+        "options": [
+            {
+                "name": "text",
+                "description": "give me something to say",
+                "type": 3,
+                "required": true
+            },
+            {
+                "name": "character",
+                "description": "who's gonna say it?",
+                "type": 3,
+                "choices": [
+                    {
+                        "name": "beavis",
+                        "value": "beavis"
+                    },
+                    {
+                        "name": "cheese",
+                        "value": "cheese"
+                    },
+                    {
+                        "name": "cow",
+                        "value": "cow"
+                    },
+                    {
+                        "name": "daemon",
+                        "value": "daemon"
+                    },
+                    {
+                        "name": "dragon",
+                        "value": "dragon"
+                    },
+                    {
+                        "name": "fox",
+                        "value": "fox"
+                    },
+                    {
+                        "name": "ghostbusters",
+                        "value": "ghostbusters"
+                    },
+                    {
+                        "name": "kitty",
+                        "value": "kitty"
+                    },
+                    {
+                        "name": "meow",
+                        "value": "meow"
+                    },
+                    {
+                        "name": "miki",
+                        "value": "miki"
+                    },
+                    {
+                        "name": "milk",
+                        "value": "milk"
+                    },
+                    {
+                        "name": "octopus",
+                        "value": "octopus"
+                    },
+                    {
+                        "name": "pig",
+                        "value": "pig"
+                    },
+                    {
+                        "name": "stegosaurus",
+                        "value": "stegosaurus"
+                    },
+                    {
+                        "name": "stimpy",
+                        "value": "stimpy"
+                    },
+                    {
+                        "name": "trex",
+                        "value": "trex"
+                    },
+                    {
+                        "name": "turkey",
+                        "value": "turkey"
+                    },
+                    {
+                        "name": "turtle",
+                        "value": "turtle"
+                    },
+                    {
+                        "name": "tux",
+                        "value": "tux"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "cowquote",
+        "type": 1,
+        "description": "cow is inspirational",
+        "options": [
+            {
+                "name": "character",
+                "description": "who's gonna say it?",
+                "type": 3,
+                "choices": [
+                    {
+                        "name": "beavis",
+                        "value": "beavis"
+                    },
+                    {
+                        "name": "cheese",
+                        "value": "cheese"
+                    },
+                    {
+                        "name": "cow",
+                        "value": "cow"
+                    },
+                    {
+                        "name": "daemon",
+                        "value": "daemon"
+                    },
+                    {
+                        "name": "dragon",
+                        "value": "dragon"
+                    },
+                    {
+                        "name": "fox",
+                        "value": "fox"
+                    },
+                    {
+                        "name": "ghostbusters",
+                        "value": "ghostbusters"
+                    },
+                    {
+                        "name": "kitty",
+                        "value": "kitty"
+                    },
+                    {
+                        "name": "meow",
+                        "value": "meow"
+                    },
+                    {
+                        "name": "miki",
+                        "value": "miki"
+                    },
+                    {
+                        "name": "milk",
+                        "value": "milk"
+                    },
+                    {
+                        "name": "octopus",
+                        "value": "octopus"
+                    },
+                    {
+                        "name": "pig",
+                        "value": "pig"
+                    },
+                    {
+                        "name": "stegosaurus",
+                        "value": "stegosaurus"
+                    },
+                    {
+                        "name": "stimpy",
+                        "value": "stimpy"
+                    },
+                    {
+                        "name": "trex",
+                        "value": "trex"
+                    },
+                    {
+                        "name": "turkey",
+                        "value": "turkey"
+                    },
+                    {
+                        "name": "turtle",
+                        "value": "turtle"
+                    },
+                    {
+                        "name": "tux",
+                        "value": "tux"
+                    }
+                ]
+            }
+        ]
+    }
+]
