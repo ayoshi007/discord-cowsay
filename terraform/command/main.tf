@@ -31,6 +31,10 @@ resource "aws_lambda_function" "command" {
   layers = [var.layer_arn]
 
   timeout = 15
+
+  environment {
+    variables = var.environment_variables
+  }
 }
 
 resource "aws_cloudwatch_log_group" "command" {

@@ -11,9 +11,13 @@ terraform {
   }
 }
 
+locals {
+  dymamodb_table_name = "CowQuotes"
+  dynamodb_table_id = "Id"
+}
+
 provider "aws" {
-  region                   = "us-east-1"
-  shared_credentials_files = ["$HOME/.aws/credentials"]
+  region                   = var.aws_region
 }
 
 module "common" {
@@ -43,6 +47,7 @@ module "cowsay_command" {
 
   invoke_command_topic_arn = module.common.invoke_command_sns_arn
   layer_arn                = module.common.lambda_layer_arn
+  environment_variables = []
 }
 
 module "cowquote_command" {
@@ -54,8 +59,13 @@ module "cowquote_command" {
 
   invoke_command_topic_arn = module.common.invoke_command_sns_arn
   layer_arn                = module.common.lambda_layer_arn
+  environment_variables = tomap(
+    {
+      DYNAMODB_TABLE_NAME = local.dymamodb_table_name
+      DYNAMODB_TABLE_ID = local.dynamodb_table_id
+    }
+  )
 }
-
 
 module "cowquote_infra" {
   source = "./terraform/cowquote"
@@ -64,4 +74,6 @@ module "cowquote_infra" {
   command_lambda_name = module.cowquote_command.function_name
   command_lambda_role_arn = module.cowquote_command.function_iam_role_arn
   command_lambda_role_name = module.cowquote_command.function_iam_role_name
+  dynamodb_table_name = local.dymamodb_table_name
+  dynamodb_table_id = local.dynamodb_table_id
 }

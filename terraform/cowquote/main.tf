@@ -1,13 +1,13 @@
 # DynamoDB table
 resource "aws_dynamodb_table" "cowquote_table" {
-  name           = "CowQuotes"
+  name           = var.dynamodb_table_name
   billing_mode   = "PROVISIONED"
   read_capacity  = "5"
   write_capacity = "5"
   hash_key       = "Id"
 
   attribute {
-    name = "Id"
+    name = var.dynamodb_table_id
     type = "S"
   }
 }
