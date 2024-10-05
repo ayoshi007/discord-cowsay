@@ -23,7 +23,7 @@ provider "aws" {
 module "common" {
   source           = "./terraform/common"
 
-  layer_source_dir = "${path.module}/venv/layer"
+  layer_source_dir = var.lambda_layer_path
 }
 
 module "proxy" {
