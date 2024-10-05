@@ -15,6 +15,7 @@ variable "invoke_command_topic_arn" {
 }
 
 variable "environment_variables" {
+    default = {}
     type = object({
         name = string
         value = string

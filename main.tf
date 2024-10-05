@@ -47,7 +47,6 @@ module "cowsay_command" {
 
   invoke_command_topic_arn = module.common.invoke_command_sns_arn
   layer_arn                = module.common.lambda_layer_arn
-  environment_variables = []
 }
 
 module "cowquote_command" {

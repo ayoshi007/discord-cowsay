@@ -8,12 +8,12 @@ import cowsay
 
 callback_url = "https://discord.com/api/v10/webhooks/{}/{}"
 
-DYNAMODB_TABLE_ARN = "CowQuotes"
+DYNAMODB_TABLE_NAME = os.environ["DYNAMODB_TABLE_NAME"]
 
 def get_quote() -> tuple[str, str]:
     # fetch quote from DynamoDB
     dynamodb_resource = boto3.resource("dynamodb")
-    table = dynamodb_resource.Table(DYNAMODB_TABLE_ARN)
+    table = dynamodb_resource.Table(DYNAMODB_TABLE_NAME)
     id = str(uuid.uuid4())
     response = table.scan(
         Limit=1,
