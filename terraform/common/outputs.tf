@@ -13,7 +13,3 @@ output "invoke_command_sns_name" {
 output "sns_publish_policy_arn" {
     value = aws_iam_policy.proxy_lambda_sns_publish_policy.arn
 }
-
-output "command_role_arn" {
-    value = aws_iam_role.command_lambda_exec.arn
-}

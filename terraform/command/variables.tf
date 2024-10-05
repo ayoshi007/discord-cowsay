@@ -13,5 +13,3 @@ variable "layer_arn" {}
 variable "invoke_command_topic_arn" {
     description = "ARN to publish command invocation messages to"
 }
-
-variable "iam_role_arn" {}

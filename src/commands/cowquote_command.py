@@ -1,9 +1,28 @@
+import os
 import json
+import uuid
+import boto3
+from boto3.dynamodb.conditions import Key, Attr
 import requests
 import cowsay
 
 callback_url = "https://discord.com/api/v10/webhooks/{}/{}"
 
+DYNAMODB_TABLE_ARN = "CowQuotes"
+
+def get_quote() -> tuple[str, str]:
+    # fetch quote from DynamoDB
+    dynamodb_resource = boto3.resource("dynamodb")
+    table = dynamodb_resource.Table(DYNAMODB_TABLE_ARN)
+    id = str(uuid.uuid4())
+    response = table.scan(
+        Limit=1,
+        ExclusiveStartKey={
+            "Id": id
+        },
+        ProjectionExpression="Quote, Author",
+    )
+    return response["Items"][0]["Author"], response["Items"][0]["Quote"]
 
 def handler(event, _):
     records = event["Records"]
@@ -13,8 +32,9 @@ def handler(event, _):
     url = callback_url.format(application_id, interaction_token)
     try:
         options = data.get("options", [])
+        author, quote = get_quote()
         data = {
-            "text": "moo",
+            "text": f"{quote}\n {author}",
             "character": "cow"
         }
         for option in options:

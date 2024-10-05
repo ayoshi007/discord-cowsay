@@ -13,7 +13,7 @@ output "sns_topic" {
     value = module.common.invoke_command_sns_name
 }
 
-output "blep_command_name" {
-    description = "Name of commands subscribed to SNS topic"
-    value = module.blep_command.function_name
+output "dynamodb_table" {
+    description = "Name of DynamoDB table of quotes"
+    value = module.cowquote_infra.dynamodb_table_name
 }

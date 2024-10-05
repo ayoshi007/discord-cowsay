@@ -17,40 +17,51 @@ provider "aws" {
 }
 
 module "common" {
-    source = "./terraform/common"
-    layer_source_dir = "${path.module}/venv/layer"
+  source           = "./terraform/common"
+
+  layer_source_dir = "${path.module}/venv/layer"
 }
 
 module "proxy" {
-    source = "./terraform/proxy"
-    source_dir = "${path.module}/proxy"
-    handler_function = "proxy.handler"
+  source           = "./terraform/proxy"
 
-    discord_public_token = var.discord_public_token
-    invoke_command_topic_arn = module.common.invoke_command_sns_arn
-    layer_arn = module.common.lambda_layer_arn
-    sns_publish_policy_arn = module.common.sns_publish_policy_arn
+  source_dir       = "${path.module}/src/proxy"
+  handler_function = "proxy.handler"
+
+  discord_public_token     = var.discord_public_token
+  invoke_command_topic_arn = module.common.invoke_command_sns_arn
+  layer_arn                = module.common.lambda_layer_arn
+  sns_publish_policy_arn   = module.common.sns_publish_policy_arn
 }
 
-module "blep_command" {
-    command_name = "blep"
-    source = "./terraform/command"
-    source_file = "${path.module}/commands/blep.py"
-    handler_function = "blep.handler"
+module "cowsay_command" {
+  source           = "./terraform/command"
 
-    invoke_command_topic_arn = module.common.invoke_command_sns_arn
-    layer_arn = module.common.lambda_layer_arn
-    iam_role_arn = module.common.command_role_arn
+  command_name     = "cowsay"
+  source_file      = "${path.module}/src/commands/cowsay_command.py"
+  handler_function = "cowsay_command.handler"
+
+  invoke_command_topic_arn = module.common.invoke_command_sns_arn
+  layer_arn                = module.common.lambda_layer_arn
 }
 
-# module "blop_command" {
-#     command_name = "blop"
-#     source = "./terraform/command"
-#     source_file = "${path.module}/commands/blop.py"
-#     handler_function = "blop.handler"
+module "cowquote_command" {
+  source           = "./terraform/command"
 
-#     discord_public_token = var.discord_public_token
-#     invoke_command_topic_arn = module.common.invoke_command_sns_arn
-#     layer_arn = module.common.lambda_layer_arn
-#     iam_role_arn = module.common.command_role_arn
-# }
+  command_name     = "cowquote"
+  source_file      = "${path.module}/src/commands/cowquote_command.py"
+  handler_function = "cowquote_command.handler"
+
+  invoke_command_topic_arn = module.common.invoke_command_sns_arn
+  layer_arn                = module.common.lambda_layer_arn
+}
+
+
+module "cowquote_infra" {
+  source = "./terraform/cowquote"
+
+  command_lambda_arn = module.cowquote_command.function_arn
+  command_lambda_name = module.cowquote_command.function_name
+  command_lambda_role_arn = module.cowquote_command.function_iam_role_arn
+  command_lambda_role_name = module.cowquote_command.function_iam_role_name
+}
