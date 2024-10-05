@@ -32,7 +32,9 @@ def handler(event, _):
     interaction_token = data["interaction_token"]
     url = callback_url.format(application_id, interaction_token)
     try:
-        options = data.get("options", [])
+        options = data["options"]
+        if not options:
+            options = []
         author, quote = get_quote()
         data = {
             "text": f"{quote}\n {author}",
