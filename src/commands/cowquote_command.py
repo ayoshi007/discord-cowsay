@@ -9,6 +9,7 @@ import cowsay
 callback_url = "https://discord.com/api/v10/webhooks/{}/{}"
 
 DYNAMODB_TABLE_NAME = os.environ["DYNAMODB_TABLE_NAME"]
+DYNAMODB_TABLE_ID = os.environ["DYNAMODB_TABLE_ID"]
 
 def get_quote() -> tuple[str, str]:
     # fetch quote from DynamoDB
@@ -18,7 +19,7 @@ def get_quote() -> tuple[str, str]:
     response = table.scan(
         Limit=1,
         ExclusiveStartKey={
-            "Id": id
+            DYNAMODB_TABLE_ID: id
         },
         ProjectionExpression="Quote, Author",
     )
